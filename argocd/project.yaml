@@ -1,0 +1,35 @@
+# Restricts what the habit-tracker Argo CD app is allowed to touch
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+
+metadata:
+  name: habit-tracker
+  namespace: argocd
+
+spec:
+  description: Habit Tracker GitOps project
+
+  sourceRepos:
+    - https://github.com/capricarun/habitapp-gitops.git
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: habit-tracker
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: apps
+      kind: Deployment
+    - group: networking.k8s.io
+      kind: Ingress
