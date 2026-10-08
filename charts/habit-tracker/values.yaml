@@ -7,7 +7,7 @@ replicaCount: 3
 
 image:
   repository: capricarun/habit-tracker
-  tag: "9999-broken"
+  tag: "7-b939913"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
