@@ -1,0 +1,7 @@
+Habit Tracker {{ .Values.image.tag }} deployed to namespace {{ .Release.Namespace }}.
+
+Check pods:     kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "habit-tracker.name" . }}
+
+Health:         curl http://<NODE_PUBLIC_IP>/actuator/health
+
+Version info:   curl http://<NODE_PUBLIC_IP>/actuator/info

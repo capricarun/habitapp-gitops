@@ -1,0 +1,95 @@
+# ---------------------------------------------------------------
+# Habit Tracker - configurable deployment values
+# Jenkins updates ONLY image.tag; everything else is edited by you.
+# ---------------------------------------------------------------
+
+replicaCount: 3
+
+image:
+  repository: capricarun/habit-tracker
+  tag: "manual-1"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+containerPort: 8080
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+serviceAccount:
+  create: true
+  name: ""
+  automountToken: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  host: ""
+  path: /
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 384Mi
+  limits:
+    cpu: 750m
+    memory: 768Mi
+
+startupProbe:
+  path: /actuator/health/liveness
+  periodSeconds: 5
+  failureThreshold: 30
+
+livenessProbe:
+  path: /actuator/health/liveness
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+readinessProbe:
+  path: /actuator/health/readiness
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+config:
+  APP_ENV: "production"
+  SERVER_PORT: "8080"
+  LOGGING_LEVEL_ROOT: "INFO"
+  JAVA_OPTS: "-XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
+
+secret:
+  create: false
+  existingSecret: habit-tracker-secret
+  data: {}
+
+terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
